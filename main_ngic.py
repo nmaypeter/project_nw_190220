@@ -28,7 +28,7 @@ if __name__ == "__main__":
                         for bud in range(1, total_budget + 1):
                             start_time = time.time()
 
-                            ssng_main = SeedSelectionNG(graph_dict, seed_cost_dict, product_list, bud, pps, wpiwp, monte_carlo)
+                            ssng_main = SeedSelectionNG(graph_dict, seed_cost_dict, product_list, bud, monte_carlo)
                             eva_main = Evaluation(graph_dict, seed_cost_dict, product_list, pps, wpiwp)
 
                             personal_prob_list = eva_main.setPersonalProbList(wallet_list)
