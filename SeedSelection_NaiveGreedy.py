@@ -132,13 +132,11 @@ class SeedSelectionNG:
                         break
 
         celf_seq.remove([-1, '-1', 0.0, 0.0])
-        print(len(celf_seq), celf_seq[:20])
-        mep = celf_seq.pop(0)
+        mep = celf_seq[0]
 
         return mep, celf_seq
 
     def getMostValuableSeed(self, s_set, celf_seq_ini, cur_pro, cur_bud):
-        print('getMostValuableSeed')
         # -- calculate expected profit for all combinations of nodes and products --
         celf_seq = [[-1, '-1', 0.0, 0.0]]
 
@@ -155,11 +153,8 @@ class SeedSelectionNG:
             if self.seed_cost_dict[celf_seq_ini[0][1]] != 0:
                 mg_ini_ratio = round(mg_ini / self.seed_cost_dict[celf_seq_ini[0][1]], 4)
 
-            print(celf_seq_ini[0][0], celf_seq_ini[0][1], mg_ini, mg_ini_ratio)
-            if mg_ini_ratio >= celf_seq_ini[0][3]:
-                mep = celf_seq_ini.pop(0)
-                print('CELF')
-                print(len(celf_seq), celf_seq_ini[:20])
+            if mg_ini_ratio >= celf_seq_ini[1][3]:
+                mep = [celf_seq_ini[0][0], celf_seq_ini[0][1], mg_ini, mg_ini_ratio]
 
                 return mep, celf_seq_ini
 
@@ -184,16 +179,16 @@ class SeedSelectionNG:
             celf_ep = [k_prod, i_node, mg, mg_ratio]
             celf_seq.append(celf_ep)
             for celf_item in celf_seq:
-                if celf_ep[3] <= celf_item[3]:
+                if celf_ep[3] >= celf_item[3]:
                     celf_seq.insert(celf_seq.index(celf_item), celf_ep)
                     celf_seq.pop()
                     break
 
         celf_seq.remove([-1, '-1', 0.0, 0.0])
-        celf_seq.reverse()
-        print(len(celf_seq), celf_seq[:20])
-        mep = celf_seq.pop(0)
-        print('NORMAL')
+        if len(celf_seq) == 0:
+            mep = [-1, '-1', 0.0, 0.0]
+        else:
+            mep = celf_seq[0]
 
         return mep, celf_seq
 
@@ -204,7 +199,7 @@ if __name__ == "__main__":
     total_budget = 10
     pp_strategy = 1
     whether_passing_information_without_purchasing = bool(0)
-    monte_carlo = 10
+    monte_carlo = 100
 
     iniG = IniGraph(data_set_name)
     iniW = IniWallet(data_set_name)
@@ -237,33 +232,23 @@ if __name__ == "__main__":
     ### seed_set: (list) the seed set
     ### seed_set[kk]: (set) the seed set for kk-product
     seed_set = [set() for _ in range(num_product)]
-    ### notban_seed_set: (list) the possible seed set
-    ### notban_seed_set[kk]: (set) the possible seed set for kk-product
-    # notban_seed_set = [set(graph_dict.keys()) for _ in range(num_product)]
 
-    print(round(time.time() - start_time, 2))
-    temp_time = time.time()
     mep_g, celf_sequence = ssng.generateCelfSequence()
     mep_k_prod, mep_i_node, mep_profit = mep_g[0], mep_g[1], mep_g[2]
-    print(mep_g, now_profit, now_budget, seed_set)
 
     # -- main --
     while now_budget < total_budget and mep_i_node != '-1':
+        celf_sequence.remove(celf_sequence[0])
         seed_set[mep_k_prod].add(mep_i_node)
 
         budget_k_list[mep_k_prod] += seed_cost_dict[mep_i_node]
         now_profit += mep_profit
         now_budget += seed_cost_dict[mep_i_node]
-        print(mep_g, now_profit, now_budget, seed_set)
 
-        print(round(time.time() - start_time, 2))
-        print(round(time.time() - temp_time, 2))
-        temp_time = time.time()
         if len(celf_sequence) == 0:
             break
         mep_g, celf_sequence = ssng.getMostValuableSeed(seed_set, celf_sequence, now_profit, now_budget)
         mep_k_prod, mep_i_node, mep_profit = mep_g[0], mep_g[1], mep_g[2]
-        print(mep_g, now_profit, now_budget, seed_set)
 
     pro_acc, pro_k_list_acc, pnn_k_list_acc = 0.0, [0.0 for _ in range(num_product)], [0 for _ in range(num_product)]
     for _ in range(100):
@@ -288,7 +273,7 @@ if __name__ == "__main__":
         avg_num_k_seed[kk] += now_num_k_seed[kk]
         avg_num_k_pn[kk] += pnn_k_list_acc[kk]
     how_long = round(time.time() - start_time, 2)
-    print("result")
+    print("\nresult")
     print(result)
     print("\npro_k_list, budget_k_list")
     print(profit_k_list, budget_k_list)
