@@ -12,7 +12,7 @@ if __name__ == "__main__":
                         product_name = "r1p3n" + str(prod_setting) + "a" * (prod_setting2 == 2) + "b" * (prod_setting2 == 3)
 
                         total_budget = 10
-                        sample_number, sample_output_number = 2, 2
+                        sample_number, sample_output_number = 10, 10
 
                         iniG = IniGraph(data_set_name)
                         iniW = IniWallet(data_set_name)
