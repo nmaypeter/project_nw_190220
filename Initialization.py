@@ -221,15 +221,12 @@ if __name__ == "__main__":
     ### -- r1p3n1b, r1p3n2b = 1.68 --
 
     ### -- max_degree --
-    ### -- email_directed = 37 --
     ### -- email_undirected = 71 --
     ### -- WikiVote_directed = 1065 --
     ### -- NetPHY_undirected = 178 --
     ### -- NetHEPT_undirected = 64 --
 
     ### -- total wallet --
-    ### -- email_directed: r1p3n1 = 811.57 --
-    ### -- email_directed: r1p3n2 = 817.32 --
     ### -- email_undirected: r1p3n1 = 811.57 --
     ### -- email_undirected: r1p3n2 = 817.32 --
     ### -- WikiVote_directed: r1p3n1 = 5995.88 --
@@ -240,8 +237,6 @@ if __name__ == "__main__":
     ### -- NetHEPT_undirected - r1p3n2 = total_wallet = 10919.6 --
 
     ### -- affordable_number --
-    ### -- email_directed - r1p3n1 = [962, 745, 571] --
-    ### -- email_directed - r1p3n2 = [934, 769, 570] --
     ### -- email_undirected - r1p3n1 = [962, 745, 571] --
     ### -- email_undirected - r1p3n2 = [934, 769, 570] --
     ### -- WikiVote_directed - r1p3n1 = [6936, 5588, 4228] --
