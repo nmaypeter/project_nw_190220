@@ -4,9 +4,9 @@ if __name__ == "__main__":
     monte_carlo = 10
     for pps in [1, 2, 3]:
         for wpiwp in [bool(0), bool(1)]:
-            for data_setting in [2]:
-                data_set_name = "email_directed" * (data_setting == 1) + "email_undirected" * (data_setting == 2) + \
-                                "WikiVote_directed" * (data_setting == 3) + "NetPHY_undirected" * (data_setting == 4)
+            for data_setting in [1, 2]:
+                data_set_name = "email_undirected" * (data_setting == 1) + "WikiVote_directed" * (data_setting == 2) + \
+                                "NetPHY_undirected" * (data_setting == 3)
                 for prod_setting in [1, 2]:
                     for prod_setting2 in [1, 2, 3]:
                         product_name = "r1p3n" + str(prod_setting) + "a" * (prod_setting2 == 2) + "b" * (prod_setting2 == 3)
