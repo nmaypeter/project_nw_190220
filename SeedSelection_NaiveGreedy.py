@@ -2,15 +2,13 @@ from Diffusion_NormalIC import *
 
 
 class SeedSelectionNG:
-    def __init__(self, g_dict, s_c_dict, prod_list, total_bud, pps, wpiwp, monte):
+    def __init__(self, g_dict, s_c_dict, prod_list, total_bud, monte):
         ### g_dict: (dict) the graph
         ### s_c_dict: (dict) the set of cost for seeds
         ### prod_list: (list) the set to record products [kk's profit, kk's cost, kk's price]
         ### total_bud: (int) the budget to select seed
         ### num_node: (int) the number of nodes
         ### num_product: (int) the kinds of products
-        ### pps: (int) the strategy to update personal prob.
-        ### wpiwp: (bool) whether passing the information without purchasing
         ### monte: (int) monte carlo times
         self.graph_dict = g_dict
         self.seed_cost_dict = s_c_dict
@@ -18,8 +16,6 @@ class SeedSelectionNG:
         self.total_budget = total_bud
         self.num_node = len(s_c_dict)
         self.num_product = len(prod_list)
-        self.pps = pps
-        self.wpiwp = wpiwp
         self.monte = monte
 
     def getSeedSetProfit(self, k_prod, i_node, s_set):
@@ -101,7 +97,7 @@ class SeedSelectionNG:
         # -- calculate expected profit for all combinations of nodes and products --
         celf_seq = [[-1, '-1', 0.0, 0.0]]
 
-        ssng_ss = SeedSelectionNG(self.graph_dict, self.seed_cost_dict, self.product_list, self.total_budget, self.pps, self.wpiwp, self.monte)
+        ssng_ss = SeedSelectionNG(self.graph_dict, self.seed_cost_dict, self.product_list, self.total_budget, self.monte)
 
         for k in range(self.num_product):
             for i in set(self.graph_dict.keys()):
@@ -140,7 +136,7 @@ class SeedSelectionNG:
         # -- calculate expected profit for all combinations of nodes and products --
         celf_seq = [[-1, '-1', 0.0, 0.0]]
 
-        ssng_ss = SeedSelectionNG(self.graph_dict, self.seed_cost_dict, self.product_list, self.total_budget, self.pps, self.wpiwp, self.monte)
+        ssng_ss = SeedSelectionNG(self.graph_dict, self.seed_cost_dict, self.product_list, self.total_budget, self.monte)
 
         # -- the cost of seed cannot exceed the budget --
         if self.seed_cost_dict[celf_seq_ini[0][1]] + cur_bud <= self.total_budget:
@@ -215,7 +211,7 @@ if __name__ == "__main__":
     # -- initialization for each budget --
     start_time = time.time()
 
-    ssng = SeedSelectionNG(graph_dict, seed_cost_dict, product_list, total_budget, pp_strategy, whether_passing_information_without_purchasing, monte_carlo)
+    ssng = SeedSelectionNG(graph_dict, seed_cost_dict, product_list, total_budget, monte_carlo)
     eva = Evaluation(graph_dict, seed_cost_dict, product_list, pp_strategy, whether_passing_information_without_purchasing)
 
     personal_prob_list = eva.setPersonalProbList(wallet_list)
