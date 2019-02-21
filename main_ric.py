@@ -97,8 +97,7 @@ if __name__ == "__main__":
                                     path1 = "result/mric_pps" + str(pps) + "_wpiwp" * wpiwp
                                     if not os.path.isdir(path1):
                                         os.mkdir(path1)
-                                    path = "result/mric_pps" + str(pps) + "_wpiwp" * wpiwp + "/" +\
-                                           data_set_name + "_" + product_name
+                                    path = "result/mric_pps" + str(pps) + "_wpiwp" * wpiwp + "/" + data_set_name + "_" + product_name
                                     if not os.path.isdir(path):
                                         os.mkdir(path)
                                     fw = open(path + "/" + "b" + str(bud) + "_i" + str(sample_count + 1) + ".txt", 'w')
