@@ -139,7 +139,7 @@ class SeedSelectionNG:
         ssng_ss = SeedSelectionNG(self.graph_dict, self.seed_cost_dict, self.product_list, self.total_budget, self.monte)
 
         # -- the cost of seed cannot exceed the budget --
-        if self.seed_cost_dict[celf_seq_ini[0][1]] + cur_bud <= self.total_budget:
+        if self.seed_cost_dict[celf_seq_ini[0][1]] + cur_bud <= self.total_budget and len(celf_seq_ini) >= 2:
             ep_ini_top = 0.0
             for _ in range(self.monte):
                 ep_ini_top += ssng_ss.getSeedSetProfit(celf_seq_ini[0][0], celf_seq_ini[0][1], s_set)
