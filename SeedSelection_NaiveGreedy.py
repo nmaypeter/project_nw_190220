@@ -195,7 +195,7 @@ if __name__ == "__main__":
     total_budget = 10
     pp_strategy = 1
     whether_passing_information_without_purchasing = bool(0)
-    monte_carlo = 100
+    monte_carlo, eva_monte_carlo = 100, 100
 
     iniG = IniGraph(data_set_name)
     iniW = IniWallet(data_set_name)
@@ -246,16 +246,16 @@ if __name__ == "__main__":
         mep_k_prod, mep_i_node, mep_profit = mep_g[0], mep_g[1], mep_g[2]
 
     pro_acc, pro_k_list_acc, pnn_k_list_acc = 0.0, [0.0 for _ in range(num_product)], [0 for _ in range(num_product)]
-    for _ in range(100):
+    for _ in range(eva_monte_carlo):
         pro, pro_k_list, pnn_k_list = eva.getSeedSetProfit(seed_set, copy.deepcopy(wallet_list), copy.deepcopy(personal_prob_list))
         pro_acc += pro
         for kk in range(num_product):
             pro_k_list_acc[kk] += pro_k_list[kk]
             pnn_k_list_acc[kk] += pnn_k_list[kk]
-    now_profit = round(pro_acc / 100, 4)
+    now_profit = round(pro_acc / eva_monte_carlo, 4)
     for kk in range(num_product):
-        profit_k_list[kk] += round(pro_k_list_acc[kk] / 100, 4)
-        pnn_k_list_acc[kk] = round(pnn_k_list_acc[kk] / 100, 2)
+        profit_k_list[kk] += round(pro_k_list_acc[kk] / eva_monte_carlo, 4)
+        pnn_k_list_acc[kk] = round(pnn_k_list_acc[kk] / eva_monte_carlo, 2)
     now_budget = round(now_budget, 2)
 
     # -- result --
