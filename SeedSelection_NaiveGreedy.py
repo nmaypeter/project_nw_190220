@@ -252,7 +252,7 @@ if __name__ == "__main__":
         for kk in range(num_product):
             pro_k_list_acc[kk] += pro_k_list[kk]
             pnn_k_list_acc[kk] += pnn_k_list[kk]
-    pro_acc = round(pro_acc / 100, 4)
+    now_profit = round(pro_acc / 100, 4)
     for kk in range(num_product):
         profit_k_list[kk] += round(pro_k_list_acc[kk] / 100, 4)
         pnn_k_list_acc[kk] = round(pnn_k_list_acc[kk] / 100, 2)
@@ -260,7 +260,7 @@ if __name__ == "__main__":
 
     # -- result --
     now_num_k_seed = [len(kk) for kk in seed_set]
-    result.append([pro_acc, now_budget, now_num_k_seed, pnn_k_list_acc, seed_set])
+    result.append([now_profit, now_budget, now_num_k_seed, pnn_k_list_acc, seed_set])
     avg_profit += now_profit
     avg_budget += now_budget
     for kk in range(num_product):
