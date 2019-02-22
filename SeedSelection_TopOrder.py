@@ -269,7 +269,6 @@ if __name__ == "__main__":
     ### now_profit, now_budget: (float) the profit and budget in this execution_time
     now_profit, now_budget = 0.0, 0.0
     ### seed_set: (list) the seed set
-    ### seed_set[kk]: (set) the seed set for kk-product
     seed_set = [set() for _ in range(num_product)]
 
     top_order_list = ssto.generateTopOrderList(data_set_name, copy.deepcopy(wallet_list))
