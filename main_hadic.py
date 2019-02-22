@@ -1,11 +1,12 @@
 from SeedSelection_HighAffordableDegree import *
 
 if __name__ == "__main__":
-    for pps in [1, 2, 3]:
-        for wpiwp in [bool(0), bool(1)]:
-            for data_setting in [1, 2]:
-                data_set_name = "email_undirected" * (data_setting == 1) + "WikiVote_directed" * (data_setting == 2) + \
-                                "NetPHY_undirected" * (data_setting == 3)
+    eva_monte_carlo = 100
+    for data_setting in [1, 2]:
+        data_set_name = "email_undirected" * (data_setting == 1) + "WikiVote_directed" * (data_setting == 2) + \
+                        "NetPHY_undirected" * (data_setting == 3)
+        for pps in [1, 2, 3]:
+            for wpiwp in [bool(0), bool(1)]:
                 for prod_setting in [1, 2]:
                     for prod_setting2 in [1, 2, 3]:
                         product_name = "r1p3n" + str(prod_setting) + "a" * (prod_setting2 == 2) + "b" * (prod_setting2 == 3)
@@ -59,16 +60,16 @@ if __name__ == "__main__":
 
                                 # -- sample result --
                                 pro_acc, pro_k_list_acc, pnn_k_list_acc = 0.0, [0.0 for _ in range(num_product)], [0 for _ in range(num_product)]
-                                for _ in range(100):
+                                for _ in range(eva_monte_carlo):
                                     pro, pro_k_list, pnn_k_list = eva_main.getSeedSetProfit(seed_set, copy.deepcopy(wallet_list), copy.deepcopy(personal_prob_list))
                                     pro_acc += pro
                                     for kk in range(num_product):
                                         pro_k_list_acc[kk] += pro_k_list[kk]
                                         pnn_k_list_acc[kk] += pnn_k_list[kk]
-                                pro_acc = round(pro_acc / 100, 4)
+                                pro_acc = round(pro_acc / eva_monte_carlo, 4)
                                 for kk in range(num_product):
-                                    profit_k_list[kk] += round(pro_k_list_acc[kk] / 100, 4)
-                                    pnn_k_list_acc[kk] = round(pnn_k_list_acc[kk] / 100, 2)
+                                    profit_k_list[kk] += round(pro_k_list_acc[kk] / eva_monte_carlo, 4)
+                                    pnn_k_list_acc[kk] = round(pnn_k_list_acc[kk] / eva_monte_carlo, 2)
                                 now_budget = round(now_budget, 2)
 
                                 # -- result --
