@@ -1,7 +1,7 @@
 from SeedSelection_PMIS import *
 
 if __name__ == "__main__":
-    monte_carlo, eva_monte_carlo = 100, 100
+    monte_carlo, eva_monte_carlo = 10, 100
     for pps in [1, 2, 3]:
         for wpiwp in [bool(0), bool(1)]:
             for data_setting in [1, 2]:
