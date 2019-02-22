@@ -99,7 +99,6 @@ if __name__ == "__main__":
     ### now_budget: (float) the budget in this execution_time
     now_budget = 0.0
     ### seed_set: (list) the seed set
-    ### seed_set[kk]: (set) the seed set for kk-product
     seed_set = [set() for _ in range(num_product)]
 
     degree_dict = sshd.constructDegreeDict(data_set_name)
