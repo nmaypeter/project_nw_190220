@@ -2,19 +2,21 @@ from Diffusion_NormalIC import *
 
 
 class SeedSelectionTO:
-    def __init__(self, g_dict, s_c_dict, prod_list, total_bud):
+    def __init__(self, g_dict, s_c_dict, prod_list, total_bud, monte):
         ### g_dict: (dict) the graph
         ### s_c_dict: (dict) the set of cost for seeds
         ### prod_list: (list) the set to record products [kk's profit, kk's cost, kk's price]
         ### total_bud: (int) the budget to select seed
         ### num_node: (int) the number of nodes
         ### num_product: (int) the kinds of products
+        ### monte: (int) monte carlo times
         self.graph_dict = g_dict
         self.seed_cost_dict = s_c_dict
         self.product_list = prod_list
         self.total_budget = total_bud
         self.num_node = len(s_c_dict)
         self.num_product = len(prod_list)
+        self.monte = monte
 
     def getSeedSetProfit(self, k_prod, i_node, s_set):
         # -- calculate the expected profit for single node when i_node's chosen as a seed for k-product --
@@ -120,11 +122,14 @@ class SeedSelectionTO:
 
     def insertExpectProfitOrder(self, t_o_list, s_set):
         # -- calculate expected profit for all combinations of nodes and products --
-        ssto_ss = SeedSelectionTO(self.graph_dict, self.seed_cost_dict, self.product_list, self.total_budget)
+        ssto_ss = SeedSelectionTO(self.graph_dict, self.seed_cost_dict, self.product_list, self.total_budget, self.monte)
 
         for k in range(self.num_product):
             for i in range(self.num_node):
-                ep = ssto_ss.getSeedSetProfit(k, str(i), s_set)
+                ep = 0.0
+                for _ in range(self.monte):
+                    ep += ssto_ss.getSeedSetProfit(k, i, s_set)
+                ep = round(ep / self.monte, 4)
                 t_o_list[k * self.num_node + i][6] = ep
                 t_o_list[k * self.num_node + i][7] = 0
 
@@ -202,7 +207,7 @@ class SeedSelectionTO:
 
         return t_dict
 
-    def getTopOrderNode(self, t_o_dict, cur_bud):
+    def getTopOrderNode(self, t_o_dict, s_set, cur_bud):
         # -- get the node with top order --
         mep = [0, '-1']
         great_order = -1
@@ -229,6 +234,11 @@ class SeedSelectionTO:
 
             if self.seed_cost_dict[mep[1]] + cur_bud > self.total_budget:
                 mep[1] = '-1'
+                continue
+
+            if mep[1] in s_set[mep[0]]:
+                mep[1] = '-1'
+                continue
 
         return mep, t_o_dict
 
@@ -236,10 +246,10 @@ class SeedSelectionTO:
 if __name__ == "__main__":
     data_set_name = "email_undirected"
     product_name = "r1p3n1"
-    total_budget = 10
+    total_budget = 2
     pp_strategy = 1
     whether_passing_information_without_purchasing = bool(0)
-    eva_monte_carlo = 100
+    monte_carlo, eva_monte_carlo = 10, 100
 
     iniG = IniGraph(data_set_name)
     iniW = IniWallet(data_set_name)
@@ -255,7 +265,7 @@ if __name__ == "__main__":
     # -- initialization for each budget --
     start_time = time.time()
 
-    ssto = SeedSelectionTO(graph_dict, seed_cost_dict, product_list, total_budget)
+    ssto = SeedSelectionTO(graph_dict, seed_cost_dict, product_list, total_budget, monte_carlo)
     eva = Evaluation(graph_dict, seed_cost_dict, product_list, pp_strategy, whether_passing_information_without_purchasing)
 
     personal_prob_list = eva.setPersonalProbList(wallet_list)
@@ -277,7 +287,7 @@ if __name__ == "__main__":
     top_order_list = ssto.insertOrder(top_order_list)
     top_order_dict = ssto.constructTopOrderDict(top_order_list)
 
-    mep_g, top_order_dict = ssto.getTopOrderNode(top_order_dict, now_budget)
+    mep_g, top_order_dict = ssto.getTopOrderNode(top_order_dict, seed_set, now_budget)
     mep_k_prod, mep_i_node = mep_g[0], mep_g[1]
 
     # -- main --
@@ -287,7 +297,7 @@ if __name__ == "__main__":
         budget_k_list[mep_k_prod] += seed_cost_dict[mep_i_node]
         now_budget += seed_cost_dict[mep_i_node]
 
-        mep_g, top_order_dict = ssto.getTopOrderNode(top_order_dict, now_budget)
+        mep_g, top_order_dict = ssto.getTopOrderNode(top_order_dict, seed_set, now_budget)
         mep_k_prod, mep_i_node = mep_g[0], mep_g[1]
 
     # fw = open("top_order_list.txt", 'w')
