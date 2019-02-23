@@ -1,7 +1,7 @@
 from SeedSelection_TopOrder import *
 
 if __name__ == "__main__":
-    eva_monte_carlo = 100
+    monte_carlo, eva_monte_carlo = 10, 100
     for data_setting in [1, 2]:
         data_set_name = "email_undirected" * (data_setting == 1) + "WikiVote_directed" * (data_setting == 2) + \
                         "NetPHY_undirected" * (data_setting == 3)
@@ -28,7 +28,7 @@ if __name__ == "__main__":
                         for bud in range(1, total_budget + 1):
                             start_time = time.time()
 
-                            ssto_main = SeedSelectionTO(graph_dict, seed_cost_dict, product_list, bud)
+                            ssto_main = SeedSelectionTO(graph_dict, seed_cost_dict, product_list, bud, monte_carlo)
                             eva_main = Evaluation(graph_dict, seed_cost_dict, product_list, pps, wpiwp)
 
                             personal_prob_list = eva_main.setPersonalProbList(wallet_list)
@@ -50,7 +50,7 @@ if __name__ == "__main__":
                                 seed_set = [set() for _ in range(num_product)]
                                 top_order_dict = copy.deepcopy(top_order_dict_o)
 
-                                mep_g, top_order_dict = ssto_main.getTopOrderNode(top_order_dict, now_budget)
+                                mep_g, top_order_dict = ssto_main.getTopOrderNode(top_order_dict, now_budget, monte_carlo)
                                 mep_k_prod, mep_i_node = mep_g[0], mep_g[1]
 
                                 # -- main --
@@ -60,7 +60,7 @@ if __name__ == "__main__":
                                     budget_k_list[mep_k_prod] += seed_cost_dict[mep_i_node]
                                     now_budget += seed_cost_dict[mep_i_node]
 
-                                    mep_g, degree_dict = ssto_main.getTopOrderNode(top_order_dict, now_budget)
+                                    mep_g, degree_dict = ssto_main.getTopOrderNode(top_order_dict, now_budget, monte_carlo)
                                     mep_k_prod, mep_i_node = mep_g[0], mep_g[1]
 
                                 # -- sample result --
