@@ -195,7 +195,7 @@ if __name__ == "__main__":
     total_budget = 10
     pp_strategy = 1
     whether_passing_information_without_purchasing = bool(0)
-    monte_carlo, eva_monte_carlo = 100, 100
+    monte_carlo, eva_monte_carlo = 10, 100
 
     iniG = IniGraph(data_set_name)
     iniW = IniWallet(data_set_name)
