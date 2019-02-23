@@ -12,7 +12,7 @@ if __name__ == "__main__":
                         product_name = "r1p3n" + str(prod_setting) + "a" * (prod_setting2 == 2) + "b" * (prod_setting2 == 3)
 
                         total_budget = 10
-                        sample_number, sample_output_number = 2, 2
+                        sample_number, sample_output_number = 10, 10
 
                         iniG = IniGraph(data_set_name)
                         iniW = IniWallet(data_set_name)
@@ -38,8 +38,6 @@ if __name__ == "__main__":
                             avg_num_k_seed, avg_num_k_pn = [0 for _ in range(num_product)], [0 for _ in range(num_product)]
                             profit_k_list, budget_k_list = [0.0 for _ in range(num_product)], [0.0 for _ in range(num_product)]
 
-                            s_matrix, p_matrix, c_matrix = sspmis_main.generateDecomposedResult()
-
                             for sample_count in range(sample_number):
                                 print("pp_strategy = " + str(pps) + ", wpiwp = " + str(wpiwp) + ", data_set_name = " + data_set_name +
                                       ", product_name = " + product_name + ", budget = " + str(bud) + ", sample_count = " + str(sample_count))
@@ -47,7 +45,9 @@ if __name__ == "__main__":
                                 seed_set = [set() for _ in range(num_product)]
                                 mep_result = [0.0, [set() for _ in range(num_product)]]
 
-                                bud_index, bud_upper_index = [0 for _ in range(num_product)], [len(kk) - 1 for kk in c_matrix]
+                                s_matrix, p_matrix, c_matrix = sspmis_main.generateDecomposedResult()
+
+                                bud_index, bud_bound_index = [len(kk) - 1 for kk in c_matrix], [0 for _ in range(num_product)]
                                 temp_bound_index = [0 for _ in range(num_product)]
 
                                 while not operator.eq(bud_index, bud_bound_index):
