@@ -48,31 +48,41 @@ if __name__ == "__main__":
                                 mep_result = [0.0, [set() for _ in range(num_product)]]
 
                                 bud_index, bud_upper_index = [0 for _ in range(num_product)], [len(kk) - 1 for kk in c_matrix]
+                                temp_bound_index = [0 for _ in range(num_product)]
 
-                                while not operator.eq(bud_index, bud_upper_index):
+                                while not operator.eq(bud_index, bud_bound_index):
+                                    ### bud_pmis: (float) the budget in this pmis execution
                                     bud_pmis = 0.0
                                     for kk in range(num_product):
                                         bud_pmis += copy.deepcopy(c_matrix)[kk][bud_index[kk]]
 
                                     if bud_pmis <= total_budget:
-                                        # -- pmis execution --
-                                        seed_set_t = [set() for _ in range(num_product)]
+                                        temp_bound_flag = 1
                                         for kk in range(num_product):
-                                            seed_set_t[kk] = copy.deepcopy(s_matrix)[kk][bud_index[kk]][kk]
+                                            if temp_bound_index[kk] > bud_index[kk]:
+                                                temp_bound_flag = 0
+                                                break
+                                        if temp_bound_flag:
+                                            temp_bound_index = copy.deepcopy(bud_index)
 
-                                        pro_acc = 0.0
-                                        for _ in range(eva_monte_carlo):
-                                            pro_acc += eva_main.getSeedSetProfit(seed_set_t, copy.deepcopy(wallet_list), copy.deepcopy(personal_prob_list))[0]
-                                        pro_acc = round(pro_acc / eva_monte_carlo, 4)
+                                            # -- pmis execution --
+                                            seed_set = [set() for _ in range(num_product)]
+                                            for kk in range(num_product):
+                                                seed_set[kk] = copy.deepcopy(s_matrix)[kk][bud_index[kk]][kk]
 
-                                        if pro_acc > mep_result[0]:
-                                            mep_result = [pro_acc, seed_set_t]
+                                            pro_acc = 0.0
+                                            for _ in range(eva_monte_carlo):
+                                                pro_acc += eva_main.getSeedSetProfit(seed_set, copy.deepcopy(wallet_list), copy.deepcopy(personal_prob_list))[0]
+                                            pro_acc = round(pro_acc / eva_monte_carlo, 4)
+
+                                            if pro_acc > mep_result[0]:
+                                                mep_result = [pro_acc, seed_set]
 
                                     pointer = num_product - 1
-                                    while bud_index[pointer] == bud_upper_index[pointer]:
-                                        bud_index[pointer] = 0
+                                    while bud_index[pointer] == bud_bound_index[pointer]:
+                                        bud_index[pointer] = len(c_matrix[pointer]) - 1
                                         pointer -= 1
-                                    bud_index[pointer] += 1
+                                    bud_index[pointer] -= 1
 
                                 pro_acc, pro_k_list_acc, pnn_k_list_acc = 0.0, [0.0 for _ in range(num_product)], [0 for _ in range(num_product)]
                                 seed_set = mep_result[1]
