@@ -254,12 +254,12 @@ if __name__ == "__main__":
     avg_num_k_seed, avg_num_k_pn = [0 for _ in range(num_product)], [0 for _ in range(num_product)]
     profit_k_list, budget_k_list = [0.0 for _ in range(num_product)], [0.0 for _ in range(num_product)]
 
-    s_matrix, p_matrix, c_matrix = sspmis.generateDecomposedResult()
-
     # -- initialization for each sample_number --
     ### now_profit, now_budget: (float) the profit and budget in this execution_time
     now_profit, now_budget = 0.0, 0.0
     mep_result = [0.0, [set() for _ in range(num_product)]]
+
+    s_matrix, p_matrix, c_matrix = sspmis.generateDecomposedResult()
 
     ### bud_index: (list) the using budget index for products
     ### bud_bound_index: (list) the bound budget index for products
