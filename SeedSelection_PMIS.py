@@ -222,7 +222,7 @@ class SeedSelectionPMIS:
 
 
 if __name__ == "__main__":
-    data_set_name = "email_undirected"
+    data_set_name = "WikiVote_directed"
     product_name = "r1p3n1"
     total_budget = 1
     pp_strategy = 1
