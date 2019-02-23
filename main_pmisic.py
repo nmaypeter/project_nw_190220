@@ -104,7 +104,7 @@ if __name__ == "__main__":
                                 # -- result --
                                 now_num_k_seed = [len(kk) for kk in seed_set]
                                 result.append([now_profit, now_budget, now_num_k_seed, pnn_k_list_acc, seed_set])
-                                avg_profit += pro_acc
+                                avg_profit += now_profit
                                 avg_budget += now_budget
                                 for kk in range(num_product):
                                     budget_k_list[kk] = round(budget_k_list[kk], 2)
