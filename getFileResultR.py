@@ -1,6 +1,6 @@
 import os
 
-for data_setting in [1, 2]:
+for data_setting in [1]:
     data_set_name = "email_undirected" * (data_setting == 1) + "WikiVote_directed" * (data_setting == 2) + \
                     "NetPHY_undirected" * (data_setting == 3)
     # model is optional
