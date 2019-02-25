@@ -201,9 +201,9 @@ if __name__ == "__main__":
     iniW = IniWallet(data_set_name)
     iniP = IniProduct(product_name)
 
-    seed_cost_dict = iniG.constructSeedCostDict()[1]
+    seed_cost_dict = iniG.constructSeedCostDict()
     graph_dict = iniG.constructGraphDict()
-    product_list = iniP.getProductList()[0]
+    product_list = iniP.getProductList()
     wallet_list = iniW.getWalletList(product_name)
     num_node = len(seed_cost_dict)
     num_product = len(product_list)
