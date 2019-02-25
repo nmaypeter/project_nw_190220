@@ -2,7 +2,7 @@ from SeedSelection_PMIS import *
 
 if __name__ == "__main__":
     monte_carlo, eva_monte_carlo = 10, 100
-    for data_setting in [2, 3]:
+    for data_setting in [1, 2, 3]:
         data_set_name = "email_undirected" * (data_setting == 1) + "dnc_email_directed" * (data_setting == 2) + \
                         "email_Eu_core_directed" * (data_setting == 3) + "WikiVote_directed" * (data_setting == 4) + \
                         "NetPHY_undirected" * (data_setting == 5)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
                                     for kk in range(num_product):
                                         bud_pmis += copy.deepcopy(c_matrix)[kk][bud_index[kk]]
 
-                                    if bud_pmis <= total_budget:
+                                    if bud_pmis <= bud:
                                         temp_bound_flag = 1
                                         for kk in range(num_product):
                                             if temp_bound_index[kk] > bud_index[kk]:
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
                                             pro_acc = 0.0
                                             for _ in range(eva_monte_carlo):
-                                                pro_acc += eva_main.getSeedSetProfit(seed_set, copy.deepcopy(wallet_list), copy.deepcopy(personal_prob_list))[0]
+                                                pro_acc += sspmis_main.getTempSeedSetProfit(seed_set)
                                             pro_acc = round(pro_acc / eva_monte_carlo, 4)
 
                                             if pro_acc > mep_result[0]:
