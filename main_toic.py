@@ -51,7 +51,7 @@ if __name__ == "__main__":
                                 seed_set = [set() for _ in range(num_product)]
                                 top_order_dict = copy.deepcopy(top_order_dict_o)
 
-                                mep_g, top_order_dict = ssto_main.getTopOrderNode(top_order_dict, now_budget, monte_carlo)
+                                mep_g, top_order_dict = ssto_main.getTopOrderNode(top_order_dict, seed_set, now_budget)
                                 mep_k_prod, mep_i_node = mep_g[0], mep_g[1]
 
                                 # -- main --
@@ -61,7 +61,7 @@ if __name__ == "__main__":
                                     budget_k_list[mep_k_prod] += seed_cost_dict[mep_i_node]
                                     now_budget += seed_cost_dict[mep_i_node]
 
-                                    mep_g, degree_dict = ssto_main.getTopOrderNode(top_order_dict, now_budget, monte_carlo)
+                                    mep_g, degree_dict = ssto_main.getTopOrderNode(top_order_dict, seed_set, now_budget)
                                     mep_k_prod, mep_i_node = mep_g[0], mep_g[1]
 
                                 # -- sample result --
