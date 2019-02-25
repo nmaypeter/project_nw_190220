@@ -67,13 +67,12 @@ class IniGraph:
                 num_node = max(num_node, int(node))
                 max_deg = max(max_deg, int(degree))
                 seed_cost_list.append([node, degree])
-            # print(max_deg)
 
             for i in range(num_node + 1):
                 s_cost_dict[str(i)] = round(int(seed_cost_list[i][1]) / max_deg, 2)
         f.close()
 
-        return max_deg, s_cost_dict
+        return s_cost_dict
 
     def constructGraphDict(self):
         # -- build graph --
@@ -90,6 +89,43 @@ class IniGraph:
                     graph[node1] = {node2: str(wei)}
         f.close()
         return graph
+
+    def getNumNode(self):
+        #  -- get the num_node --
+        ### num_node: (int) the number of nodes in data
+        num_node = 0
+        with open(self.data_data_path) as f:
+            for line in f:
+                (node1, node2) = line.split()
+                num_node = max(int(node1), int(node2), num_node)
+        f.close()
+        print('num_node = ' + str(round(num_node, 2)))
+
+        return num_node
+
+    def getNumEdge(self):
+        # -- get the num_edge --
+        num_edge = 0
+        with open(self.data_weight_path) as f:
+            for line in f:
+                num_edge += 1
+        f.close()
+        print('num_edge = ' + str(round(num_edge, 2)))
+
+        return num_edge
+
+    def getMaxDegree(self):
+        # -- get the max_deg --
+        ### max_deg: (int) the maximum degree in data
+        with open(self.data_degree_path) as f:
+            max_deg = 0
+            for line in f:
+                (node, degree) = line.split()
+                max_deg = max(max_deg, int(degree))
+        f.close()
+        print('max_deg = ' + str(round(max_deg, 2)))
+
+        return max_deg
 
 
 class IniWallet:
@@ -113,18 +149,29 @@ class IniWallet:
     def getWalletList(self, prod_name):
         # -- get wallet_list from file --
         w_list = []
-        total_wallet = 0.0
         with open("data/" + self.data_name + "/wallet_r" + list(prod_name)[list(prod_name).index('r') + 1] +
                   "p" + list(prod_name)[list(prod_name).index('p') + 1] +
                   "n" + list(prod_name)[list(prod_name).index('n') + 1] + ".txt") as f:
             for line in f:
                 (node, wallet) = line.split()
                 w_list.append(float(wallet))
-                total_wallet += float(wallet)
         f.close()
-        # print(round(total_wallet, 2))
 
         return w_list
+
+    def getTotalWallet(self, prod_name):
+        # -- get total_wallet from file --
+        total_w = 0.0
+        with open("data/" + self.data_name + "/wallet_r" + list(prod_name)[list(prod_name).index('r') + 1] +
+                  "p" + list(prod_name)[list(prod_name).index('p') + 1] +
+                  "n" + list(prod_name)[list(prod_name).index('n') + 1] + ".txt") as f:
+            for line in f:
+                (node, wallet) = line.split()
+                total_w += float(wallet)
+        f.close()
+        print(prod_name + ' = total wallet = ' + str(round(total_w, 2)))
+
+        return total_w
 
 
 class IniProduct:
@@ -179,22 +226,31 @@ class IniProduct:
     def getProductList(self):
         # -- get product list from file
         ### prod_list: (list) [profit, cost, price]
-        ### total_price: (float2) the sum of prices
         prod_list = []
+        with open("product/" + self.prod_name + ".txt") as f:
+            for line in f:
+                (p, c, r, pr) = line.split()
+                prod_list.append([float(p), float(c), round(float(p) + float(c), 2)])
+
+        return prod_list
+
+    def getTotalPrice(self):
+        # -- get total_price from file
+        ### total_price: (float2) the sum of prices
         total_price = 0.0
         with open("product/" + self.prod_name + ".txt") as f:
             for line in f:
                 (p, c, r, pr) = line.split()
                 total_price += float(pr)
-                prod_list.append([float(p), float(c), round(float(p) + float(c), 2)])
+        print('total_price = ' + str(round(total_price, 2)))
 
-        return prod_list, round(total_price, 2)
+        return round(total_price, 2)
 
 
 if __name__ == "__main__":
     start_time = time.time()
     data_set_name = "email_undirected"
-    product_name = "r1p3n1"
+    product_name = "r1p3n2"
 
     iniG = IniGraph(data_set_name)
     iniW = IniWallet(data_set_name)
@@ -202,15 +258,20 @@ if __name__ == "__main__":
 
     iniG.setEdgeWeight()
     iniG.countNodeOutDegree()
-    # iniP.setProductListWithSRRandMFP()
-    product_list, sum_price = iniP.getProductList()
-    iniW.setNodeWallet(product_name, sum_price)
+    number_node = iniG.getNumNode()
+    number_edge = iniG.getNumEdge()
+    max_degree = iniG.getMaxDegree()
 
-    seed_cost_dict = iniG.constructSeedCostDict()[1]
-    graph_dict = iniG.constructGraphDict()
-    print(len(graph_dict))
-    # product_list = iniP.getProductList()[0]
+    # iniP.setProductListWithSRRandMFP()
+    # product_list = iniP.getProductList()
+    # sum_price = iniP.getTotalPrice()
+    # iniW.setNodeWallet(product_name, sum_price)
+
+    # seed_cost_dict = iniG.constructSeedCostDict()
+    # graph_dict = iniG.constructGraphDict()
+    # product_list = iniP.getProductList()
     # wallet_list = iniW.getWalletList(product_name)
+    total_wallet = iniW.getTotalWallet(product_name)
 
     how_long = round(time.time() - start_time, 4)
     print("total time: " + str(how_long) + "sec")
@@ -220,28 +281,35 @@ if __name__ == "__main__":
     ### -- r1p3n1a, r1p3n2a = 1.32 --
     ### -- r1p3n1b, r1p3n2b = 1.68 --
 
+    ### -- num_node --
+    ### -- email_undirected = 1133 --
+    ### -- dnc_email_directed = 2029 --
+    ### -- email_Eu_core_directed = 1004 --
+    ### -- WikiVote_directed = 7115 --
+    ### -- NetPHY_undirected = 37149 --
+
+    ### -- num_edge --
+    ### -- email_undirected = 10902 --
+    ### -- dnc_email_directed = 5598 --
+    ### -- email_Eu_core_directed = 25571 --
+    ### -- WikiVote_directed = 201524 --
+    ### -- NetPHY_undirected = 348322 --
+
     ### -- max_degree --
     ### -- email_undirected = 71 --
+    ### -- dnc_email_directed = 331 --
+    ### -- email_Eu_core_directed = 334 --
     ### -- WikiVote_directed = 1065 --
     ### -- NetPHY_undirected = 178 --
-    ### -- NetHEPT_undirected = 64 --
 
     ### -- total wallet --
-    ### -- email_undirected: r1p3n1 = 811.57 --
+    ### -- email_undirected: r1p3n1 = 833.93 --
     ### -- email_undirected: r1p3n2 = 817.32 --
+    ### -- dnc_email_directed: r1p3n1 = 1451.4 --
+    ### -- dnc_email_directed: r1p3n2 = 1449.16 --
+    ### -- email_Eu_core_directed: r1p3n1 = 729.0 --
+    ### -- email_Eu_core_directed: r1p3n2 = 712.76 --
     ### -- WikiVote_directed: r1p3n1 = 5995.88 --
     ### -- WikiVote_directed: r1p3n2 = 5998.45 --
     ### -- NetPHY_undirected - r1p3n1 = total_wallet = 26920.52 --
     ### -- NetPHY_undirected - r1p3n2 = total_wallet = 26734.2 --
-    ### -- NetHEPT_undirected - r1p3n1 = total_wallet = 11006.32 --
-    ### -- NetHEPT_undirected - r1p3n2 = total_wallet = 10919.6 --
-
-    ### -- affordable_number --
-    ### -- email_undirected - r1p3n1 = [962, 745, 571] --
-    ### -- email_undirected - r1p3n2 = [934, 769, 570] --
-    ### -- WikiVote_directed - r1p3n1 = [6936, 5588, 4228] --
-    ### -- WikiVote_directed - r1p3n2 = [6973, 5585, 4188] --
-    ### -- NetPHY_undirected - r1p3n1 = [31103, 24975, 18908] --
-    ### -- NetPHY_undirected - r1p3n2 = [31054, 24921, 18709] --
-    ### -- NetHEPT_undirected - r1p3n1 = [12741, 10246, 7707] --
-    ### -- NetHEPT_undirected - r1p3n2 = [12782, 10221, 7607] --
