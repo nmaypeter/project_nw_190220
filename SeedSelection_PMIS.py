@@ -52,7 +52,7 @@ class SeedSelectionPMIS:
 
                 if out in a_n_set[k_prod_t]:
                     continue
-                if i_node in a_e_set[k_prod_t] and out in a_e_set[k_prod_t][i_node]:
+                if i_node_t in a_e_set[k_prod_t] and out in a_e_set[k_prod_t][i_node_t]:
                     continue
                 try_a_n_sequence.append([k_prod_t, out, 1])
                 a_n_set[k_prod_t].add(i_node_t)
@@ -83,7 +83,77 @@ class SeedSelectionPMIS:
 
                 if out in a_n_set[k_prod_t]:
                     continue
-                if i_node in a_e_set[k_prod_t] and out in a_e_set[k_prod_t][i_node]:
+                if i_node_t in a_e_set[k_prod_t] and out in a_e_set[k_prod_t][i_node_t]:
+                    continue
+                try_a_n_sequence.append([k_prod_t, out, child_depth + 1])
+                a_n_set[k_prod_t].add(i_node_t)
+                if i_node_t in a_e_set[k_prod_t]:
+                    a_e_set[k_prod_t][i_node_t].add(out)
+                else:
+                    a_e_set[k_prod_t][i_node_t] = {out}
+
+        return round(ep, 4)
+
+    def getTempSeedSetProfit(self, s_set):
+        # -- calculate the expected profit for single node when i_node's chosen as a seed for k-product --
+        ### ep: (float2) the expected profit
+        s_set_t = copy.deepcopy(s_set)
+        a_n_set = copy.deepcopy(s_set_t)
+        a_e_set = [{} for _ in range(self.num_product)]
+        ep = 0.0
+
+        # -- insert the children of seeds into try_s_n_sequence --
+        ### try_s_n_sequence: (list) the sequence to store the seed for k-products [k, i]
+        ### try_a_n_sequence: (list) the sequence to store the nodes may be activated for k-products [k, i, prob]
+        try_s_n_sequence, try_a_n_sequence = [], []
+        for k in range(self.num_product):
+            for i in s_set_t[k]:
+                try_s_n_sequence.append([k, i])
+
+        while len(try_s_n_sequence) > 0:
+            seed = choice(try_s_n_sequence)
+            try_s_n_sequence.remove(seed)
+            k_prod_t, i_node_t = seed[0], seed[1]
+
+            out_dict = self.graph_dict[i_node_t]
+            for out in out_dict:
+                if random.random() > float(out_dict[out]):
+                    continue
+
+                if out in a_n_set[k_prod_t]:
+                    continue
+                if i_node_t in a_e_set[k_prod_t] and out in a_e_set[k_prod_t][i_node_t]:
+                    continue
+                try_a_n_sequence.append([k_prod_t, out, 1])
+                a_n_set[k_prod_t].add(i_node_t)
+                if i_node_t in a_e_set[k_prod_t]:
+                    a_e_set[k_prod_t][i_node_t].add(out)
+                else:
+                    a_e_set[k_prod_t][i_node_t] = {out}
+
+        while len(try_a_n_sequence) > 0:
+            try_node = choice(try_a_n_sequence)
+            try_a_n_sequence.remove(try_node)
+            k_prod_t, i_node_t, child_depth = try_node[0], try_node[1], try_node[2]
+
+            ### -- purchasing --
+            ep += self.product_list[k_prod_t][0]
+
+            # -- notice: prevent the node from owing no receiver --
+            if i_node_t not in self.graph_dict:
+                continue
+
+            if child_depth >= 3:
+                continue
+
+            out_dict = self.graph_dict[i_node_t]
+            for out in out_dict:
+                if random.random() > float(out_dict[out]):
+                    continue
+
+                if out in a_n_set[k_prod_t]:
+                    continue
+                if i_node_t in a_e_set[k_prod_t] and out in a_e_set[k_prod_t][i_node_t]:
                     continue
                 try_a_n_sequence.append([k_prod_t, out, child_depth + 1])
                 a_n_set[k_prod_t].add(i_node_t)
@@ -222,7 +292,7 @@ class SeedSelectionPMIS:
 
 
 if __name__ == "__main__":
-    data_set_name = "WikiVote_directed"
+    data_set_name = "email_undirected"
     product_name = "r1p3n1"
     total_budget = 1
     pp_strategy = 1
@@ -289,7 +359,7 @@ if __name__ == "__main__":
 
                 pro_acc = 0.0
                 for _ in range(eva_monte_carlo):
-                    pro_acc += eva.getSeedSetProfit(seed_set, copy.deepcopy(wallet_list), copy.deepcopy(personal_prob_list))[0]
+                    pro_acc += sspmis.getTempSeedSetProfit(seed_set)
                 pro_acc = round(pro_acc / eva_monte_carlo, 4)
 
                 if pro_acc > mep_result[0]:
