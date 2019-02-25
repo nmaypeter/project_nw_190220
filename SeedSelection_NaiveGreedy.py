@@ -170,8 +170,8 @@ class SeedSelectionNG:
             if self.seed_cost_dict[i_node] != 0:
                 mg_ratio = round(mg / self.seed_cost_dict[i_node], 4)
 
-            if mg <= 0:
-                continue
+            # if mg <= 0:
+            #     continue
             celf_ep = [k_prod, i_node, mg, mg_ratio]
             celf_seq.append(celf_ep)
             for celf_item in celf_seq:
