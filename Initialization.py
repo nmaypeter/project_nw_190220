@@ -22,7 +22,7 @@ class IniGraph:
         fw.close()
         f.close()
 
-    def countNodeOutDegree(self):
+    def outputNodeOutDegree(self):
         #  -- count the out-degree --
         ### num_node: (int) the number of nodes in data
         fw = open(self.data_degree_path, 'w')
@@ -249,7 +249,7 @@ class IniProduct:
 
 if __name__ == "__main__":
     start_time = time.time()
-    data_set_name = "email_undirected"
+    data_set_name = "NetPHY_undirected"
     product_name = "r1p3n2"
 
     iniG = IniGraph(data_set_name)
@@ -257,8 +257,8 @@ if __name__ == "__main__":
     iniP = IniProduct(product_name)
 
     iniG.setEdgeWeight()
-    iniG.countNodeOutDegree()
-    number_node = iniG.getNumNode()
+    iniG.outputNodeOutDegree()
+    # number_node = iniG.getNumNode()
     number_edge = iniG.getNumEdge()
     max_degree = iniG.getMaxDegree()
 
