@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
                                             pro_acc = 0.0
                                             for _ in range(eva_monte_carlo):
-                                                pro_acc += sspmis_main.getTempSeedSetProfit(seed_set)
+                                                pro_acc += sspmis_main.getSeedSetProfit(seed_set)
                                             pro_acc = round(pro_acc / eva_monte_carlo, 4)
 
                                             if pro_acc > mep_result[0]:
