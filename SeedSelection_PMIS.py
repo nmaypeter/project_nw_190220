@@ -19,7 +19,7 @@ class SeedSelectionPMIS:
         self.num_product = len(prod_list)
         self.monte = monte
 
-    def getSeedSetProfit(self, k_prod, i_node, s_set):
+    def getMarginalProfit(self, k_prod, i_node, s_set):
         # -- calculate the expected profit for single node when i_node's chosen as a seed for k-product --
         ### ep: (float2) the expected profit
         s_set_t = copy.deepcopy(s_set)
@@ -94,7 +94,7 @@ class SeedSelectionPMIS:
 
         return round(ep, 4)
 
-    def getTempSeedSetProfit(self, s_set):
+    def getSeedSetProfit(self, s_set):
         # -- calculate the expected profit for single node when i_node's chosen as a seed for k-product --
         ### ep: (float2) the expected profit
         s_set_t = copy.deepcopy(s_set)
@@ -180,7 +180,7 @@ class SeedSelectionPMIS:
             ep = 0.0
 
             for _ in range(self.monte):
-                ep += sspmis_ss.getSeedSetProfit(k_prod, i, s_set)
+                ep += sspmis_ss.getMarginalProfit(k_prod, i, s_set)
             ep = round(ep / self.monte, 4)
             mg = round(ep, 4)
             mg_ratio = 0.0
@@ -212,7 +212,7 @@ class SeedSelectionPMIS:
         if self.seed_cost_dict[celf_seq_ini[0][1]] + cur_bud <= self.total_budget and len(celf_seq_ini) >= 2:
             ep_ini_top = 0.0
             for _ in range(self.monte):
-                ep_ini_top += sspmis_ss.getSeedSetProfit(celf_seq_ini[0][0], celf_seq_ini[0][1], s_set)
+                ep_ini_top += sspmis_ss.getMarginalProfit(celf_seq_ini[0][0], celf_seq_ini[0][1], s_set)
             ep_ini_top = round(ep_ini_top / self.monte, 4)
             mg_ini = round(ep_ini_top - cur_pro, 4)
             mg_ini_ratio = 0.0
@@ -233,7 +233,7 @@ class SeedSelectionPMIS:
                 continue
 
             for _ in range(self.monte):
-                ep += sspmis_ss.getSeedSetProfit(k_prod, i_node, s_set)
+                ep += sspmis_ss.getMarginalProfit(k_prod, i_node, s_set)
             ep = round(ep / self.monte, 4)
             mg = round(ep - cur_pro, 4)
             mg_ratio = 0.0
@@ -359,7 +359,7 @@ if __name__ == "__main__":
 
                 pro_acc = 0.0
                 for _ in range(eva_monte_carlo):
-                    pro_acc += sspmis.getTempSeedSetProfit(seed_set)
+                    pro_acc += sspmis.getSeedSetProfit(seed_set)
                 pro_acc = round(pro_acc / eva_monte_carlo, 4)
 
                 if pro_acc > mep_result[0]:
